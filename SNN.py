@@ -2,8 +2,8 @@ import tensorflow as tf
 from random import *
 import math
 import numpy as np
-from tensorflow.examples.tutorials.mnist import input_data
-mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
+#from tensorflow.examples.tutorials.mnist import input_data
+#mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
 
 class Layer(object):
     def __init__(self,input,n_in,n_out,sess, W=None):
@@ -156,11 +156,16 @@ if __name__ == '__main__':
         #return tf.reduce_sum([[loss_func(l2.output,true_index)],[tf.multiply(K, w_sum_cost(l1.W))],[tf.multiply(K, w_sum_cost(l2.W))],[tf.multiply(K2, L2_func(l1.W))],[tf.multiply(K2, L2_func(l2.W))]])
 		return tf.reduce_sum([[loss_func(l3.output,true_index)],[tf.multiply(K, w_sum_cost(l1.W))],[tf.multiply(K, w_sum_cost(l2.W))],[tf.multiply(K, w_sum_cost(l3.W))],[tf.multiply(K2, L2_func(l1.W))],[tf.multiply(K2, L2_func(l2.W))],[tf.multiply(K2, L2_func(l3.W))]])
     
-    print('start training...')
+	print('start training...')
+	#load training and eval data
+	mnist = tf.contrib.learn.datasets.load_dataset('mnist')
+	train_data = mnist.train.images
+	train_labels = np.asarray(mnist.train.labels, dtype=np.float32)
+	eval_data = mnist.test.images
+	eval_labels = np.asarray(mnist.test.labels, dtype=np.float32)
     i=0
     for epoch in range(training_epochs):
-		batch_xs, batch_ys = mnist.train.next_batch(1)
-		new_xs = batch_xs[0]
+		new_xs = train_data[1]
 		new_new_xs = []
 		for x in new_xs:
 			if x > 0.5:
@@ -168,15 +173,15 @@ if __name__ == '__main__':
 			else:
 				new_new_xs.append(1.0)
 		train_input = new_new_xs
-		noise = np.random.normal(0, 0.05, new_new_xs.shape)
+		#noise = np.random.normal(0, 0.05, new_new_xs.shape)
 		train_input.append(noise)
         #train_input = [[math.exp(0),math.exp(0)],[math.exp(0),math.exp(1)],[math.exp(1),math.exp(0)],[math.exp(1),math.exp(1)]]
-		j = 0
-		while j in batch_ys.shape[1]:
-			if batch_ys[0, j] == 1:
-				new_ys = j
-				j = j+1
-		train_output = new_ys
+		#j = 0
+		#while j in batch_ys.shape[1]:
+			#if batch_ys[0, j] == 1:
+				#new_ys = j
+				#j = j+1
+		train_output = train_labels
         #train_output = [0,1,1,0]
         #if epoch % 1 == 0:
             #print('epoch '+repr(epoch)+', cost = '+repr(sess.run(cost_func(train_output[epoch % 4]),{input:train_input[epoch%4]})))
